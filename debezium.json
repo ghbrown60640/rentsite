@@ -1,0 +1,15 @@
+{
+  "name": "rentsite-connector",
+  "config": {
+    "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+    "database.hostname": "rentsite-db",
+    "database.port": "5432",
+    "database.user": "rentsite",
+    "database.password": "rentsite",
+    "database.dbname" : "rentsite",
+    "database.server.name": "rentsite-db",
+    "table.include.list": "public.aptlist_lease",
+    "publication.autocreate.mode": "filtered",
+    "plugin.name": "pgoutput"
+  }
+}

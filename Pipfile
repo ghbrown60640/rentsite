@@ -1,0 +1,26 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+python-terraform = "*"
+names = "*"
+faker = "*"
+psycopg2 = "*"
+sh = "*"
+sqlalchemy = "*"
+django = "*"
+isort = "*"
+django-extensions = "*"
+graphene-django = "*"
+install = "*"
+kafka-logging-handler = "==0.2.5"
+
+[requires]
+python_version = "3.9.1"
+
+[pipenv]
+allow_prereleases = true
