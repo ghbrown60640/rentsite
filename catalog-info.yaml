@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: rentsite
+  description: Backend for the world's worst apartment rental app
+spec:
+  type: website
+  lifecycle: production
+  owner: rentsite-team
+  system: rentsite-backend
+  providesApis:
+    - rentsite-api
