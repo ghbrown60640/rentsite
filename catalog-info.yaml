@@ -10,10 +10,3 @@ spec:
   system: rentsite-backend
   providesApis:
     - rentsite-api
-auth:
-  environment: development
-  providers:
-    github:
-      development:
-        clientId: ${AUTH_GITHUB_CLIENT_ID}
-        clientSecret: ${AUTH_GITHUB_CLIENT_SECRET}
