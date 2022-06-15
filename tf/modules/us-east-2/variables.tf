@@ -1,4 +1,4 @@
-variable "region" {
-  description = "AWS Deployment region.."
-  default     = "us-east-2"
-}
+# variable "region" {
+#   description = "AWS Deployment region.."
+#   default     = "us-east-2"
+# }
