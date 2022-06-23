@@ -12,25 +12,33 @@ resource "aws_db_subnet_group" "rentsite-db-sg" {
 resource "aws_rds_cluster" "rentsite-db" {
   cluster_identifier = "rentsite-db"
   engine             = "aurora-postgresql"
-  engine_mode        = "serverless"
-  database_name      = "rentsite"
-  master_username    = "rentsite"
-  master_password    = "rentsite"
-  scaling_configuration {
-    min_capacity = 2
-    max_capacity = 8
-  }
+  # engine_mode        = "serverless"
+  database_name   = "rentsite"
+  master_username = "rentsite"
+  master_password = "rentsite"
+  # scaling_configuration {
+  #   min_capacity = 2
+  #   max_capacity = 8
+  # }
   final_snapshot_identifier = "rentsite"
   db_subnet_group_name      = aws_db_subnet_group.rentsite-db-sg.name
-  skip_final_snapshot       = false
-  # backup_retention_period = 5
-  # preferred_backup_window = "07:00-09:00"
+  skip_final_snapshot       = true
+  vpc_security_group_ids    = [module.network.postgres-sg.id]
+
 }
-# resource "aws_rds_cluster_instance" "rentsite-cluster-instances" {
-#   count              = 2
-#   identifier         = "aurora-cluster-demo-${count.index}"
-#   cluster_identifier = aws_rds_cluster.rentsite-db.id
-#   instance_class     = "db.m6i.large"
-#   engine             = aws_rds_cluster.rentsite-db.engine
-#   engine_version     = aws_rds_cluster.rentsite-db.engine_version
+resource "aws_rds_cluster_instance" "rentsite-db-instances" {
+  count               = 2
+  identifier          = "rentsite-db-${count.index}"
+  cluster_identifier  = aws_rds_cluster.rentsite-db.id
+  instance_class      = "db.r5.large"
+  engine              = aws_rds_cluster.rentsite-db.engine
+  engine_version      = aws_rds_cluster.rentsite-db.engine_version
+  publicly_accessible = true
+}
+# resource "aws_route53_record" "rentsitedb" {
+#   zone_id = module.network.route53_zone.id
+#   name    = "db.rentsite.glennsbuilds.me"
+#   type    = "A"
+#   ttl     = 300
+#   records = [aws_rds_cluster.rentsite-db.endpoint]
 # }

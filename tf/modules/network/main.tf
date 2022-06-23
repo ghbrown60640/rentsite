@@ -1,4 +1,4 @@
-data "aws_region" "current" {}
+stevedata "aws_region" "current" {}
 data "aws_availability_zones" "available" {
   state = "available"
 }
@@ -35,6 +35,47 @@ resource "aws_subnet" "rentsite-public-subnet" {
     Name = "rentsite-public-subnet"
   }
 }
+resource "aws_route53_zone" "glennsbuilds" {
+  name = "glennsbuilds.me"
+}
+resource "aws_route53_zone" "rentsite" {
+  name = "rentsite.glennsbuilds.me"
+  tags = {
+    App = "rentsite"
+  }
+}
+resource "aws_security_group" "postgres-sg" {
+  name        = "Postgres"
+  description = "Allow PostgreSQL inbound traffic"
+  vpc_id      = aws_vpc.rentsite-vpc.id
+
+  ingress {
+    description = "Postgres"
+    from_port   = 5432
+    to_port     = 5432
+    protocol    = "tcp"
+    cidr_blocks = [aws_vpc.rentsite-vpc.cidr_block]
+    # ipv6_cidr_blocks = [aws_vpc.rentsite-vpc.ipv6_cidr_block]
+  }
+  egress {
+    from_port = 0
+    to_port   = 0
+    protocol  = "-1"
+    cidr_blocks = [
+      "0.0.0.0/0"
+    ]
+  }
+  # egress {
+  #   description = "Postgres"
+  #   from_port   = -1
+  #   to_port     = -1
+  #   protocol    = "tcp"
+  #   cidr_blocks = [aws_vpc.rentsite-vpc.cidr_block]
+  #   # ipv6_cidr_blocks = [aws_vpc.rentsite-vpc.ipv6_cidr_block]
+  # }
+}
+
+
 
 # # Subnet (private)
 # resource "aws_subnet" "private_subnet" {
@@ -49,20 +90,20 @@ resource "aws_subnet" "rentsite-public-subnet" {
 #   }
 # }
 #
-# # Routing table for public subnets
-# resource "aws_route_table" "rtblPublic" {
-#   vpc_id = aws_vpc.rentsite_vpc.id
-#
-#   route {
-#     cidr_block = "0.0.0.0/0"
-#     gateway_id = aws_internet_gateway.myInternetGateway.id
-#   }
-#
-#   tags = {
-#     Name = "rtblPublic"
-#   }
-# }
-#
+# Routing table for public subnets
+resource "aws_route_table" "rentsite-route-table-public" {
+  vpc_id = aws_vpc.rentsite-vpc.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.rentsite-ig.id
+  }
+
+  tags = {
+    Name = "rentsite-route-table-public"
+  }
+}
+
 # resource "aws_route_table_association" "route" {
 #   count          = length(data.aws_availability_zones.available.names)
 #   subnet_id      = element(aws_subnet.public_subnet.*.id, count.index)
